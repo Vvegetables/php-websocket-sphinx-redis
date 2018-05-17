@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>
+		指定弹出窗口位置
+		</title>
+		
+	</head>
+	<body>
+		<form ><button id = "jump">跳转</button></form>
+	</body>
+	<script>
+		var url = "http://10.21.30.215:55151/web/supervise_chat.html";
+		function openwin() {
+    		window.open (url, "newwindow", "height=100, width=400, toolbar=no, menubar=no, scrollbars=no, resizable=no, location=no, status=no");
+    	}
+    	document.getElementById('jump').addEventListener('click',openwin());
+	</script>
+</html>

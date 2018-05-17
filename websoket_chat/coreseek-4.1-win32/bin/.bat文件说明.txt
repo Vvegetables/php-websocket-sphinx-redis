@@ -1,0 +1,4 @@
+coreseek.bat 初始化启动项
+stop 服务
+启动 start2 --- 增量索引
+启动 start1 --- 主索引

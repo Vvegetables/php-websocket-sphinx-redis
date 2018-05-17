@@ -1,0 +1,50 @@
+
+.layui-layout-admin .header {
+    height: 55px;
+    border-bottom: 5px solid #5FB878;
+    background-color: #393D49;
+    color: #393d49;
+}
+
+.layui-input, .layui-select, .layui-textarea {
+    height: 38px;
+    line-height: 38px;
+    line-height: 36px\9;
+    border: 1px solid #393d49;
+    background-color: #393d49;
+    border-radius: 2px;
+    color: #ccc;
+}
+.layui-input:hover, .layui-textarea:hover {
+    border-color: #393d49!important;
+}
+
+.layui-input:focus, .layui-textarea:focus {
+    border-color: #393d49!important;
+}
+
+.header-demo .layui-nav .layui-this:after, .header-demo .layui-nav-bar {
+    background-color: transparent;
+}
+
+.layui-form-item {
+    margin-bottom: 0;
+    clear: both;
+}
+.layui-nav {
+    color: #393d49;
+}
+.session_account{
+    width: 20px;
+    height: 20px;
+    border: 1px solid #5fb878;
+    background: #5fb878;
+    border-radius: 50%;
+    color: #fff;
+    position: absolute;
+    top: 11px;
+    right: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

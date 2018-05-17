@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>
+			无标题文档
+		</title>
+		<script type="text/javascript" src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+	</head>
+	<body>
+		<a href="http://10.21.30.215:55151/web/supervise_chat.html">监听测试</a>
+	</body>
+	<script type="text/javascript">
+  		window.onload = function() {
+    		$.ajax({
+        		type: "POST",
+        		url: "http://127.0.0.1:8088/basic/web/index.php?r=service/service",
+        		dataType: "json",
+        		success: function (message) {
+            		//if (message > 0) {
+                	//alert("请求已提交！我们会尽快与您取得联系");
+            		//}
+            		var data = eval("("+message.data+")");
+            		//var data = message.data;
+            		console.log(data);
+
+        		},
+        		error: function (message) {
+           			$("#request-process-patent").html("提交数据失败！");
+        		}
+    		});
+  		};
+	</script>    
+</html>

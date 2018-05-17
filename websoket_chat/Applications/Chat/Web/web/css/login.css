@@ -1,0 +1,115 @@
+.layui-tab-title li {
+    font-size: 14px;
+    transition: all .3s;
+    -webkit-transition: all .3s;
+    position: relative;
+    line-height: 50px;
+    min-width: 65px;
+    padding: 0 ;
+    width:50%;
+    font-size: 30px;
+}
+
+.layui-tab-title {
+    position: relative;
+    left: 0;
+    height: 60px;
+    white-space: nowrap;
+    font-size: 0;
+    border-bottom: 1px solid #e2e2e2;
+    transition: all .2s;
+    -webkit-transition: all .2s;
+}
+
+.layui-tab-title .layui-this:after {
+    position: absolute;
+    left: 0;
+    top: 0;
+    content: '';
+    width: 100%;
+    height: 61px;
+    border: 1px solid #e2e2e2;
+    border-bottom-color: #fff;
+    border-radius: 2px 2px 0 0;
+    -webkit-box-sizing: border-box!important;
+    -moz-box-sizing: border-box!important;
+    box-sizing: border-box!important;
+    pointer-events: none;
+}
+
+.layui-btn {
+    display: inline-block;
+    height: 38px;
+    line-height: 38px;
+    padding: 0 18px;
+    background-color: #5FB878;
+    color: #fff;
+    white-space: nowrap;
+    text-align: center;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    opacity: .9;
+    filter: alpha(opacity=90);
+}
+
+.layui-btn-mini {
+    height: 22px;
+    line-height: 22px;
+    padding: 0 5px;
+    font-size: 12px;
+}
+
+.layui-form-item .layui-input-inline {
+    float: left;
+    width: 55%;
+    margin-right: 10px;
+}
+
+.layui-form-label {
+    float: left;
+    display: block;
+    padding: 9px 0;
+    width: 80px;
+    font-weight: 400;
+     text-align: left; 
+}
+.send_ver{
+	margin: 6px 0 0 7%;
+    width: 20%;
+}
+
+.yuming_eg{
+	padding-top: 11px;
+    color: #5fb878;
+}
+
+.checkbox{
+	margin-left:10%;
+	position:relative;
+	width:80%;
+}
+.checkbox a{
+    color: #5fb878;
+    position: absolute;
+    right: 1%;
+    top: 9px;
+}
+
+.x-login-box a{
+    color: #5fb878;
+    position: absolute;
+    right: 1%;
+    top: 9px;
+    }
+
+ .register2{
+ 	display:none;
+ }
+ .tip{
+    position: absolute;
+    bottom: -9px;
+    left: 64px;
+    color: #ff5722;
+    display: none;
+ }

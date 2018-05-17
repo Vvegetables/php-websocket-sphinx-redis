@@ -1,0 +1,499 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>客服聊天</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="./css/x-admin.css" media="all">
+    <link rel="stylesheet" href="css/current_session.css">
+    <!--the css for jquery.mCustomScrollbar-->
+    <link rel="stylesheet" href="lib/jQuery-emoji-master20160321/lib/css/jquery.mCustomScrollbar.min.css" />
+    <!--the css for this plugin-->
+    <link rel="stylesheet" href="lib/jQuery-emoji-master20160321/src/css/jquery.emoji.css" />
+    <!-- <script src="http://www.weizoom.com/static/resources/js/jquery-1.7.1.min.js"></script>-->
+    <script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.js"></script>
+    <!--the js for jquery-->
+    <!--(Optional) the js for jquery.mCustomScrollbar's addon-->
+    <script src="lib/jQuery-emoji-master20160321/lib/script/jquery.mousewheel-3.0.6.min.js"></script>
+    <!--the js for jquery.mCustomScrollbar-->
+    <script src="lib/jQuery-emoji-master20160321/lib/script/jquery.mCustomScrollbar.min.js"></script>
+    <!--the js for this plugin-->
+    <script src="lib/jQuery-emoji-master20160321/src/js/jquery.emoji.js"></script>
+</head>
+
+<body>
+    <div class="main">
+        <div class="list">
+            <div class="list_header">当前会话</div>
+            <table class="layui-table">
+                <colgroup>
+                    <col width="150">
+                    <col width="200">
+                    <col>
+                </colgroup>
+                <thead>
+                </thead>
+                <tbody id = "userlist">
+                </tbody>
+            </table>
+        </div>
+        <div class='chart_ui'>
+            <div class="dialogue-content">
+                <div class="dialogue-header">
+                    <form class="layui-form x-center" action="" style="width:800px">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"></label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="username" placeholder="请输入关键字搜索" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline" style="width:80px">
+                                <button class="layui-btn" lay-submit="" lay-filter="sreach"><i class="layui-icon" style="color:#fff">&#xe615;</i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="dialogue_contain" class="dialogue-contain">
+                    <div class="dialogue-service-contain">
+                    </div>   
+                </div>
+                <div>
+                    <select style="margin-bottom:8px;border:1px solid black;" id="client_list">
+                        <option value="all">所有人</option>
+                    </select>
+                </div>
+                <div class="dialogue-submit">
+                    <p id="dialogue_hint" class="dialogue-hint"><span class="dialogue-hint-icon">!</span><span class="dialogue-hint-text">发送内容不能为空</span></p>
+                    <textarea id="dialogue_input" class="dialogue-input-text" placeholder="请输入您的问题，按Enter键提交（shift+Enter换行）"></textarea>
+                    <div class="tools">
+                        <button id="mybtn" class="layui-icon">&#xe650;</button>
+                        <button class="layui-icon">&#xe60d;</button>
+                        <button class="layui-icon">&#xe600;</button>
+                        <button class="send">发送</button>
+                    </div>
+                </div>
+            </div>
+            <div class="hot-question">
+                <div class="header">
+                    <!-- <button type="botton" class="mybutton active">用户资料</button>-->
+                    <button type="botton" class="mybutton active">满意度</button>
+                </div>
+                <div class="body">
+
+                    <div class="tabcontent con-active">
+                        <table class="layui-table" lay-even lay-skin="nob">
+                            <colgroup>
+                                <col width="150">
+                                <col width="200">
+                                <col>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td>时间</td>
+                                    <td id = "mytime">2017-06-24 14:00:00</td>
+                                </tr>
+                                <tr>
+                                    <td>顾客评价</td>
+                                    <td id = "rank">满意</td>
+                                </tr>
+                                <tr>
+                                    <td>参评客服</td>
+                                    <td id = "servername">小白</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script>
+    var doc = document;
+
+    var dialogueInput = doc.getElementById('dialogue_input'),
+        dialogueContain = doc.getElementById('dialogue_contain'),
+        dialogueHint = doc.getElementById('dialogue_hint'),
+        btnOpen = doc.getElementById('btn_open'),
+        btnClose = doc.getElementById('btn_close'),
+        timer,
+        timerId,
+        shiftKeyOn = false; // 辅助判断shift键是否按住
+
+
+    dialogueInput.addEventListener('keydown', function(e) {
+        var e = e || window.event;
+        if (e.keyCode == 16) {
+            shiftKeyOn = true;
+        }
+        if (shiftKeyOn) {
+            return true;
+        } else if (e.keyCode == 13 && dialogueInput.value == '') {
+            // console.log('发送内容不能为空');
+            // 多次触发只执行最后一次渐隐
+            setTimeout(function() {
+                fadeIn(dialogueHint);
+                clearTimeout(timerId)
+                timer = setTimeout(function() {
+                    fadeOut(dialogueHint)
+                }, 2000);
+            }, 10);
+            timerId = timer;
+            return true;
+        } else if (e.keyCode == 13) {
+            to_client_id = $("#client_list option:selected").attr("value");
+            to_client_name = $("#client_list option:selected").text();
+            ws.send('{"type":"response","to_client_id":"'+to_client_id+'","to_client_name":"'+to_client_name+'","content":"'+dialogueInput.value.replace(/"/g, '\\"').replace(/\n/g,'\\n').replace(/\r/g, '\\r')+'"}');
+            dialogueInput.value = "";
+            dialogueInput.focus();
+        }
+    });
+
+    dialogueInput.addEventListener('keyup', function(e) {
+        var e = e || window.event;
+        if (e.keyCode == 16) {
+            shiftKeyOn = false;
+            return true;
+        }
+        if (!shiftKeyOn && e.keyCode == 13) {
+            dialogueInput.value = null;
+        }
+    });
+
+
+    // 渐隐
+    function fadeOut(obj) {
+        var n = 100;
+        var time = setInterval(function() {
+            if (n > 0) {
+                n -= 10;
+                obj.style.opacity = '0.' + n;
+            } else if (n <= 30) {
+                obj.style.opacity = '0';
+                clearInterval(time);
+            }
+        }, 10);
+        return true;
+    }
+
+    // 渐显
+    function fadeIn(obj) {
+        var n = 30;
+        var time = setInterval(function() {
+            if (n < 90) {
+                n += 10;
+                obj.style.opacity = '0.' + n;
+            } else if (n >= 80) {
+
+                obj.style.opacity = '1';
+                clearInterval(time);
+            }
+        }, 100);
+        return true;
+    }
+
+    var ws, name, to_client_id='all', to_client_name='所有人', client_list={};
+    var select_client_id = 'all';
+    //var name2="33";
+    //用来存储客服属性
+    var clients = {};
+    var src = "images/server.png";
+    // var rank = "无";
+    // var mytime = "无"；
+    // 连接服务端
+    function connect() {
+       // 创建websocket
+       ws = new WebSocket("ws://"+document.domain+":7272");
+       // 当socket连接打开时，输入用户名
+       ws.onopen = onopen;
+       // 当有消息时根据消息类型显示不同信息
+       ws.onmessage = onmessage; 
+       ws.onclose = function() {
+          //alert('你已经断开连接！');
+         $("#dialogue_contain").append('<div class="dialogue-service-contain">'+
+            //'系统'+
+            //'<br>'+
+            '<img class="circle_img" src="images/logo.png">'+
+            '<span class="dialogue-text dialogue-service-text" style = "color:red;">您已经断开连接，请重新连接！</span>'+
+            '</div>');
+        console.log("连接关闭，不进行重连");
+        // console.log("连接关闭，定时重连");
+       //    connect();
+       };
+       ws.onerror = function() {
+          console.log("出现错误");
+       };
+    }
+
+    // 连接建立时发送登录信息
+    function onopen(){
+        
+        if(!name)
+        {
+            show_prompt();
+        }
+
+
+        // 登录
+        var login_data = '{"type":"server","client_name":"'+name.replace(/"/g, '\\"')+'"}';
+        console.log("websocket握手成功，发送登录数据:"+login_data);
+        ws.send(login_data);
+    }
+
+    // 输入姓名
+    function show_prompt(){  
+        name = prompt('输入你的名字：', '');
+        if(!name || name=='null'){  
+            name = '客服';
+        }
+    }    
+
+    // 服务端发来消息时
+    function onmessage(e){
+        
+        console.log(e.data);
+        //解析json数据，如果不加上(),{}会被当做是代码块，解析出来的就不是json格式的数据了
+        var data = eval("("+e.data+")");
+        switch(data['type']){
+            // 服务端ping客户端
+            case 'ping':
+                ws.send('{"type":"pong"}');
+                break;
+            // 登录 更新用户列表
+            case 'server':
+                if(data['client_list']){
+                    client_list = data['client_list'];
+
+                    for(var p in data['client_list']){
+                        clients[client_list[p]] = {
+                            'client_id' : p
+                        };
+                        // client_list[p]  = data['client_list'][p];
+                    }
+                }
+                else{
+                    client_list[data['client_id']] = data['client_name'];
+                    clients[data['client_name']] = {
+                        'client_id':data['client_id']
+                    };  
+                }
+                $("#rank").text(data['rank']);
+                $("#mytime").text(data['mytime']);
+                $('#servername').text(data['client_name']);
+
+                console.log($("#rank").text());
+
+                flush_client_list(data['time'],"","all");
+                console.log(data['client_name']+"登录成功"+",room_id:"+data['group']+",client_id:"+data['client_id']);
+                break;
+            // 发言
+            case 'say':
+                flush_client_list(data['time'],data['content'],data['from_client_name']);
+                client_say(data['from_client_id'], data['from_client_name'], data['content'], data['time']);
+                break;
+
+            case 'response':
+              service_say(data['from_client_id'], data['from_client_name'], data['content'], data['time']);
+              break;
+            case 'flush':
+                if(data['client_list']){
+                    client_list = data['client_list'];
+                }   //这个判断是不存在的
+                else{
+                    client_list[data['client_id']] = data['client_name']; 
+                    clients[data['client_name']] = {
+                        'client_id':data['client_id']
+                    }; 
+                }
+                flush_client_list(data['time'],"",data['client_name']);
+                break;
+            // 用户退出 更新用户列表
+            case 'logout':
+                //{"type":"logout","client_id":xxx,"time":"xxx"}
+                client_say(data['from_client_id'], data['from_client_name'], data['from_client_name']+' 退出了', data['time']);
+                delete client_list[data['from_client_id']];
+                delete clients[data['from_client_name']];
+                flush_client_list(data['time']);
+                break;
+        }
+    }
+
+
+    //检测对象是否为一个空对象
+    function isEmptyObject(obj){
+        for(var name in obj){
+            if(obj.hasOwnProperty(name)){
+                return false;//返回FALSE，不是空对象
+            }
+        }
+        return true;//返回true为空对象
+    }
+
+    // 提交对话
+    function onSubmit() {
+      var input = document.getElementById("dialogue_input");
+      to_client_id = $("#client_list option:selected").attr("value");
+      to_client_name = $("#client_list option:selected").text();
+      if(isEmptyObject(client_list)){
+        alert('目前没有用户！');
+        input.value = "";
+        input.focus();
+        return;
+      }
+      ws.send('{"type":"response","to_client_id":"'+to_client_id+'","to_client_name":"'+to_client_name+'","content":"'+input.value.replace(/"/g, '\\"').replace(/\n/g,'\\n').replace(/\r/g, '\\r')+'"}');
+      input.value = "";
+      input.focus();
+      dialogueContain.scrollTop = dialogueContain.scrollHeight;
+      //dialogueContain.scrollIntoView();
+    }
+
+    // 刷新用户列表框
+    function flush_client_list(mytime){
+        //默认参数的设置
+
+        /*
+            时间，会话内容，用户名字
+        */
+
+        var content = arguments[1]?arguments[1]:"";
+        var client_name = arguments[2]?arguments[2]:"";
+        var temp = mytime.split(' ');
+        var hour = temp[1];
+
+        // if("" != client_name){
+        //     for(var k in clients){
+        //         if(k == client_name){
+        //             clients[k]['time'] = hour;
+        //             clients[k]['content'] = content;
+        //             var temp = clients[k];
+        //         }
+        //     }  
+        // }
+
+        //if(typeof(temp) == "undefined")
+
+
+        var userlist_window = $("#userlist");
+        var client_list_slelect = $("#client_list");
+        
+        userlist_window.empty();
+        client_list_slelect.empty();
+
+        client_list_slelect.append('<option value="all" id="cli_all">所有人</option>');
+        for(var p in clients){
+            
+            if(client_name != p && client_name != "all"){
+                $("#userlist").append(
+                    '<tr>'+
+                        '<td>'+
+                            '<img class="list_item_img" src="images/logo.png">'+
+                            '<div class = "list_item">'+
+                                '<p>'+
+                                    '<span class="list_item_id">'+p+'</span>'+'<span class="list_item_time">'+clients[p]['time']+'</span>'+
+                                '</p>'+
+                                '<p class = "list_item_content">'+clients[p]['content']+'</p>'+//这里之后可以显示发来的消息
+                            '</div>'+
+                        '</td>'+
+                    '</tr>'
+                    );
+            }else if(client_name in clients || client_name == "all"){
+                clients[p]['time'] = hour;
+                clients[p]['content'] = content;
+                $("#userlist").append(
+                    '<tr>'+
+                        '<td>'+
+                            '<img class="list_item_img" src="images/logo.png">'+
+                            '<div class = "list_item">'+
+                                '<p>'+
+                                    '<span class="list_item_id">'+p+'</span>'+'<span class="list_item_time">'+hour+'</span>'+
+                                '</p>'+
+                                '<p class = "list_item_content">'+content+'</p>'+//这里之后可以显示发来的消息
+                            '</div>'+
+                        '</td>'+
+                    '</tr>'
+                    );
+            }
+        
+            client_list_slelect.append('<option value="'+clients[p]['client_id']+'">'+ p +'</option>');
+        }
+        $("#client_list").val(select_client_id);
+        console.log(client_list);
+        console.log(clients);
+    }
+
+    // 发言
+    function client_say(from_client_id, from_client_name, content, time){
+        
+        $("#dialogue_contain").append('<div class="dialogue-service-contain">'+
+            '<p class="dialogue_time">'+time+'</p>'+
+            '<h3>'+from_client_name+'</h3>'+
+            '<img class="circle_img" src="images/logo.png">'+            
+            '<span class="dialogue-text dialogue-service-text">'+content+'</span>'+
+            '</div>'); 
+        dialogueContain.scrollTop = dialogueContain.scrollHeight;
+        //dialogueContain.scrollIntoView();
+    }
+    // 发言
+    function service_say(from_client_id, from_client_name, content, time){
+        
+        $("#dialogue_contain").append('<div class="dialogue-customer-contain">'+
+            '<p class="dialogue_time">'+time+'</p>'+
+            //'<h3>'+from_client_name+'</h3>'+           
+            '<span class="dialogue-text dialogue-customer-text">'+'你对'+'<b style="color:red">'+to_client_name+'</b>说：'+content+'</span>'+
+            '<img class="circle_img" src="'+ src +'">'+ 
+            '</div>'); 
+        dialogueContain.scrollTop = dialogueContain.scrollHeight;
+        //dialogueContain.scrollIntoView();
+    }    
+
+
+    /*
+        获得客户用户名
+    */
+    // window.onload = function(){
+    //     window.addEventListener('message',function(e){
+    //         //if(e.source != window.parent) return;
+    //         name2 = e.data;
+    //         console.log("父框架传来的消息:"+name);
+    //         alert(name2);
+    //     },false);
+    // }
+
+    
+
+    $(function() {
+
+        var search = decodeURI(location.search);
+        if(search)
+            name = search.split("=")[1];
+
+        //连接websocket
+        connect();
+
+        //alert(name);
+
+        $('.chart_ui').show();
+        var a = $('.mybutton').index();
+        $('.tabcontent').eq(a).show().addClass('con-active').siblings().removeClass('con-active').hide();
+        $(this).addClass('active').siblings().removeClass('active');
+        
+
+        //绑定消息发送时间
+        $(".send").click(function(){
+            onSubmit();
+        });
+
+        select_client_id = 'all';
+        $("#client_list").change(function(){
+             select_client_id = $("#client_list option:selected").attr("value");
+        });
+
+    });
+
+    </script>
+</body>
+
+</html>

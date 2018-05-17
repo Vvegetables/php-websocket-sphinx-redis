@@ -1,0 +1,48 @@
+ * {
+        margin: 0px;
+        padding: 0px;
+    }
+    
+    body {
+        margin: 0px auto;
+    }
+    
+    .blue {
+       margin-left:10px;
+        
+        width: 97%；
+    }
+    
+    .white {
+        margin-top: 1px;
+        background: #fff;
+        height: 500px;
+        margin-top: 50px;
+    }
+    
+    .white1 {
+        height: 35px;
+    }
+    
+    .white,
+    .white1 {
+        background: #fff;
+    }
+    
+    .title1 {
+        font-size: 35px
+    }
+    
+    .title2 {
+        color: gray;
+        vertical-align: center
+    }
+    
+    .page {
+        color: gray;
+    }
+     .h2
+  {
+  position:relative;
+  top:30px;
+  }

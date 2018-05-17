@@ -1,0 +1,2 @@
+命令行运行此代码：
+redis-server.exe --service-install redis.conf

@@ -1,0 +1,79 @@
+.layui-collapse {
+    border: 0;
+    border-radius: 2px;
+}
+
+.layui-colla-item {
+    border-top:0; 
+}
+
+.layui-colla-title {
+    position: relative;
+    height: 42px;
+    line-height: 42px;
+    padding: 0 15px 0 35px;
+    color: #333;
+    background-color: #fff; 
+    cursor: pointer;
+}
+
+.layui-colla-content {
+    display: none; 
+    padding-left:15px;
+    padding-top:0;
+    line-height: 22px;
+    border-top:0;
+    color: #666;
+}
+
+.layui-input, .layui-textarea {
+     display: inline; 
+    width: 95%;
+    padding-left:0;
+}
+
+table td {
+    text-align:left;
+}
+.layui-table th {
+    text-align: left;
+}
+
+input[type="text"]:disabled {
+    background-color: transparent;
+}
+
+.modified_input{
+    background: transparent;
+    border:0;
+}
+
+ul li{
+    text-align: center;
+}
+.reposity_sort{
+    width:26%;
+    border:1px solid #ccc;
+    border-radius: 5px;
+    height:500px;
+    float:left;
+     margin-left: 15px;
+}
+.reposity_detail{
+    width:70%;
+    border:1px solid #ccc;
+    border-radius: 5px;
+    height:500px;
+    float:left;
+    margin-left: 2%;
+}
+.header{
+    height: 30px;
+    width: initial;
+    background: #ccc;
+    padding: 13px;
+    font-size: 20px;
+}
+.reposity_detail form{
+   margin-top: -10px;
+}

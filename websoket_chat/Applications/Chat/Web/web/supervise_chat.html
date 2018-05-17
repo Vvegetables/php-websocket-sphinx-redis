@@ -1,0 +1,372 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>客服聊天</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="./css/x-admin.css" media="all">
+    <link rel="stylesheet" href="css/current_session.css">
+    <!--the css for jquery.mCustomScrollbar-->
+    <link rel="stylesheet" href="lib/jQuery-emoji-master20160321/lib/css/jquery.mCustomScrollbar.min.css" />
+    <!--the css for this plugin-->
+    <link rel="stylesheet" href="lib/jQuery-emoji-master20160321/src/css/jquery.emoji.css" />
+    <!-- <script src="http://www.weizoom.com/static/resources/js/jquery-1.7.1.min.js"></script>-->
+    <script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.js"></script>
+    <!--the js for jquery-->
+    <!--(Optional) the js for jquery.mCustomScrollbar's addon-->
+    <script src="lib/jQuery-emoji-master20160321/lib/script/jquery.mousewheel-3.0.6.min.js"></script>
+    <!--the js for jquery.mCustomScrollbar-->
+    <script src="lib/jQuery-emoji-master20160321/lib/script/jquery.mCustomScrollbar.min.js"></script>
+    <!--the js for this plugin-->
+    <script src="lib/jQuery-emoji-master20160321/src/js/jquery.emoji.js"></script>
+</head>
+
+<body>
+    <div class="main">
+        <div class="list">
+            <div class="list_header">用户列表</div>
+            <table class="layui-table">
+                <colgroup>
+                    <col width="150">
+                    <col width="200">
+                    <col>
+                </colgroup>
+                <thead>
+                </thead>
+                <tbody id = "userlist">
+                </tbody>
+            </table>
+        </div>
+        <div class='chart_ui'>
+            <div class="dialogue-content">
+                <div class="dialogue-header">
+                    <form class="layui-form x-center" action="" style="width:800px">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label"></label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="username" placeholder="请输入关键字搜索" autocomplete="off" class="layui-input">
+                            </div>
+                            <div class="layui-input-inline" style="width:80px">
+                                <button class="layui-btn" lay-submit="" lay-filter="sreach"><i class="layui-icon" style="color:#fff">&#xe615;</i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="dialogue_contain" class="dialogue-contain">
+                    <div class="dialogue-service-contain">
+                    </div>   
+                </div>
+            </div>
+            <div class="hot-question">
+                <div class="header">
+                    <button type="botton" class="mybutton active">满意度</button>
+                </div>
+                <div class="body">
+
+                    <div class="tabcontent con-active">
+                        <table class="layui-table" lay-even lay-skin="nob">
+                            <colgroup>
+                                <col width="150">
+                                <col width="200">
+                                <col>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <td>时间</td>
+                                    <td>2017-06-24 14:00:00</td>
+                                </tr>
+                                <tr>
+                                    <td>顾客评价</td>
+                                    <td>满意</td>
+                                </tr>
+                                <tr>
+                                    <td>参评客服</td>
+                                    <td>小白</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script>
+    var doc = document;
+
+    var dialogueInput = doc.getElementById('dialogue_input'),
+        dialogueContain = doc.getElementById('dialogue_contain'),
+        dialogueHint = doc.getElementById('dialogue_hint'),
+        btnOpen = doc.getElementById('btn_open'),
+        btnClose = doc.getElementById('btn_close'),
+        timer,
+        timerId,
+        shiftKeyOn = false; // 辅助判断shift键是否按住
+
+    var ws, name, to_client_id='all', to_client_name='所有人', client_list={};
+    var select_client_id = 'all';
+    var flag = 0;
+    var session_list = new Array();
+    var src = "images/server.png";
+    // 连接服务端
+    function connect() {
+       // 创建websocket
+       ws = new WebSocket("ws://"+document.domain+":7272");
+       // 当socket连接打开时，输入用户名
+       ws.onopen = onopen;
+       // 当有消息时根据消息类型显示不同信息
+       ws.onmessage = onmessage; 
+       ws.onclose = function() {
+          //alert('你已经断开连接！');
+         $("#dialogue_contain").append('<div class="dialogue-service-contain">'+
+            //'系统'+
+            //'<br>'+
+            '<img class="circle_img" src="images/logo.png">'+
+            '<span class="dialogue-text dialogue-service-text" style = "color:red;">您已经断开连接，请重新连接！</span>'+
+            '</div>');
+        console.log("连接关闭，不进行重连");
+        // console.log("连接关闭，定时重连");
+       //    connect();
+       };
+       ws.onerror = function() {
+          console.log("出现错误");
+       };
+    }
+
+    // 连接建立时发送登录信息
+    function onopen(){
+        
+        if(!name)
+        {
+            show_prompt();
+        }
+
+
+        // 登录
+        var login_data = '{"type":"govern","govern":"govern","client_name":"'+name.replace(/"/g, '\\"')+'"}';
+        console.log("websocket握手成功，发送登录数据:"+login_data);
+        ws.send(login_data);
+    }
+
+    // 输入姓名
+    function show_prompt(){  
+        name = prompt('输入你的名字：', '');
+        if(!name || name=='null'){  
+            name = '客服';
+        }
+    }    
+
+    // 服务端发来消息时
+    function onmessage(e){
+        
+        //console.log(e.data);
+        //解析json数据，如果不加上(),{}会被当做是代码块，解析出来的就不是json格式的数据了
+        var data = eval("("+e.data+")");
+        console.log(data);
+        //console.log("flag:" + flag);
+        switch(data['type']){
+            // 服务端ping客户端
+            case 'ping':
+                if(1 == flag){
+                    outputSession();
+                }
+                ws.send('{"type":"pong"}');
+                console.log("flag:" + flag);
+                break;
+            // 登录 更新用户列表
+            case 'govern':
+                if(data['client_list']){
+                    client_list = data['client_list'];
+                }
+                else{
+                    client_list[data['client_id']] = data['client_name']; 
+                }
+                flush_client_list(data['time']);
+                console.log(data['client_name']+"登录成功"+",room_id:"+data['group']+",client_id:"+data['client_id']);
+                break;
+            // 发言
+            case 'say':
+                if(2 == flag){
+                    flush_client_list(data['time'],data['content']);
+                    client_say(data['from_client_id'], data['from_client_name'], data['content'], data['time']);                    
+                }else{
+                    session_list[session_list.length] = {
+                        type    : data['type'],
+                        time    : data['time'],
+                        content : data['content'],
+                        from_client_name : data['from_client_name'],
+                        from_client_id : data['from_client_id']
+                    }
+                }
+
+                break;
+
+            case 'response':
+                if(2 == flag){
+                    to_client_name = data['to_client_name'];
+                    service_say(data['from_client_id'], data['from_client_name'], data['content'], data['time']);
+                }else{
+                    session_list[session_list.length] = {
+                        type    : data['type'],
+                        time    : data['time'],
+                        content : data['content'],
+                        from_client_name : data['from_client_name'],
+                        from_client_id : data['from_client_id'],
+                        to_client_name : data['to_client_name']
+                    }
+                }
+
+                break;
+            /*
+                取出他们当前对话的历史消息
+            */
+            case 'history':
+                console.log(data['result']);
+                if(!data['result']){
+                    flag = 2;
+
+                }
+                for(var i = 0; i < data['result'].length; i++){
+                    //console.log(data['result'][i]['status']);
+                    
+                    var p = data['result'][i];
+                    console.log(p.status);
+                    to_client_name = p.client;
+
+                    if(1 == p['status']){   //说明是用户的话
+                        client_say('',p['client'],p['content'],p['mytime']);
+                    }else{
+                        service_say('',p['service'],p['content'],p['mytime']);
+                    }
+                }
+                flag = 1;
+                //console.log("flag:"+flag);
+                break;
+
+
+            case 'flush':
+                if(data['client_list']){
+                    client_list = data['client_list'];
+                }
+                else{
+                    client_list[data['client_id']] = data['client_name']; 
+                }
+                flush_client_list(data['time']);
+                break;
+            // 用户退出 更新用户列表
+            case 'logout':
+                //{"type":"logout","client_id":xxx,"time":"xxx"}
+                client_say(data['from_client_id'], data['from_client_name'], data['from_client_name']+' 退出了', data['time']);
+                delete client_list[data['from_client_id']];
+                flush_client_list(data['time']);
+                break;
+        }
+    }
+
+    function outputSession(){
+        for(var i = 0; i < session_list.length; i++){
+            if(session_list[i].type == 'say'){
+                client_say(session_list[i]['from_client_id'],session_list[i]['from_client_name'],session_list[i]['content'],session_list[i]['time']);
+                console.log("from_client_name:"+session_list[i]['from_client_id']);
+            }else{
+                to_client_name = data['to_client_name'];
+                service_say(session_list[i]['from_client_id'],session_list[i]['from_client_name'],session_list[i]['content'],session_list[i]['time']);
+                console.log("from_client_name:"+session_list[i]['from_client_id']);
+            }
+        }
+        //打印结束
+        flag = 2;
+    }
+
+
+    //检测对象是否为一个空对象
+    function isEmptyObject(obj){
+        for(var name in obj){
+            if(obj.hasOwnProperty(name)){
+                return false;//返回FALSE，不是空对象
+            }
+        }
+        return true;//返回true为空对象
+    }
+
+
+    // 刷新用户列表框
+    function flush_client_list(mytime){
+        //默认参数的设置
+        var content = arguments[1]?arguments[1]:"";
+        var temp = mytime.split(' ');
+        var hour = temp[1];
+
+
+        var userlist_window = $("#userlist");
+        var client_list_slelect = $("#client_list");
+        
+        userlist_window.empty();
+        client_list_slelect.empty();
+
+        client_list_slelect.append('<option value="all" id="cli_all">所有人</option>');
+        for(var p in client_list){
+            $("#userlist").append(
+                '<tr>'+
+                    '<td>'+
+                        '<img class="list_item_img" src="images/logo.png">'+
+                        '<div class = "list_item">'+
+                            '<p>'+
+                                '<span class="list_item_id">'+client_list[p]+'</span>'+//'<span class="list_item_time">'+hour+'</span>'+
+                            '</p>'+
+                            //'<p class = "list_item_content">'+content+'</p>'+//这里之后可以显示发来的消息
+                        '</div>'+
+                    '</td>'+
+                '</tr>');
+        }
+        console.log(client_list);
+    }
+
+    // 发言
+    function client_say(from_client_id, from_client_name, content, time){
+        
+        $("#dialogue_contain").append('<div class="dialogue-service-contain">'+
+            '<p class="dialogue_time">'+time+'</p>'+
+            '<h3 style = "color:red">'+from_client_name+'</h3>'+
+            '<img class="circle_img" src="images/logo.png">'+            
+            '<span class="dialogue-text dialogue-service-text">'+content+'</span>'+
+            '</div>'); 
+        dialogueContain.scrollTop = dialogueContain.scrollHeight;
+        //dialogueContain.scrollIntoView();
+    }
+    // 发言
+    function service_say(from_client_id, from_client_name, content, time){
+        
+        $("#dialogue_contain").append('<div class="dialogue-customer-contain">'+
+            '<p class="dialogue_time">'+time+'</p>'+
+            '<h3 style="color:red">'+from_client_name+'</h3>'+           
+            '<span class="dialogue-text dialogue-customer-text">'+"对"+'<b style="color:red">'+to_client_name+'</b>说：'+content+'</span>'+
+            '<img class="circle_img" src="'+ src +'">'+ 
+            '</div>'); 
+        dialogueContain.scrollTop = dialogueContain.scrollHeight;
+        //dialogueContain.scrollIntoView();
+    }    
+    
+
+    $(function() {
+        var search = decodeURI(location.search);
+        if(search)
+            name = search.split("=")[1];
+        //连接websocket
+        connect();
+
+        $('.chart_ui').show();
+        var a = $('.mybutton').index();
+        $('.tabcontent').eq(a).show().addClass('con-active').siblings().removeClass('con-active').hide();
+        $(this).addClass('active').siblings().removeClass('active');
+        
+    });
+
+    </script>
+</body>
+
+</html>

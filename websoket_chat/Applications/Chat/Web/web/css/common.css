@@ -1,0 +1,176 @@
+.layui-form-label {
+    float: left;
+    display: block;
+    padding: 9px 15px;
+    width: 80px;
+    font-weight: 400;
+    text-align: left;
+}
+
+.x_title{
+	font-size: 29px;
+    width: 135px;
+    margin-top: 10px;
+    position: absolute;
+    left: 20px;
+}
+
+.x_select{
+	width:20%;
+	display: inline-block;
+    margin-right: 4%;
+}
+.company_title{
+	font-size: 29px;
+    width: 20%;
+    margin-top: 10px;
+    margin-left:15px;
+    clear: both;
+ 
+}
+
+.form_position{
+    width: 12%;
+    margin-left: 70.7%;
+    display: inline-block;
+}
+
+.form_position1{
+    width: 55%;
+    position: absolute;
+    right: -14%;
+    top: 40px;
+}
+.company_title_small{
+	font-size: 25px;
+    width: 25%;
+    margin-top: 10px;
+    margin-left:15px;
+    clear: both;
+}
+
+#company_account {
+	margin-top: 10px;
+    position: absolute;
+}
+
+#login_yuming{
+	margin-top: 10px;
+    position: absolute;
+}
+#person_account{
+	margin-top: 10px;
+    position: absolute;
+}
+
+.data_item{
+	width: 30%;
+    height: 220px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    float: left;
+    margin: 10px;
+}
+.item_top{
+	width:100%;
+	height:70%;
+	border-bottom:1px solid #ccc;
+	/*position:relative;*/
+}
+.item_top div:first-of-type{
+	display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50%;
+    font-size: 18px;
+	
+}
+
+#all_session{
+	font-size: 45px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+    height: 50%;
+    color: #1e9fff;
+}
+.item_bottom,.item_bottom_a{
+    height:40%;
+    width:100%;
+    
+}
+
+.item_bottom,.item_bottom_a div{
+	width:100%;
+	height:30%;
+	display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+}
+
+
+.item_bottom_a div:first-of-type{
+    margin-top:6px;
+}
+.textarea_body{
+	margin-left:20px;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	width:47%;
+	float:left;
+}
+.wel_title{
+	height: 180px;
+    float: left;
+    width: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+}
+.wel_ico{
+	height:40px;
+	width:100%;
+	background: rgba(204,204,204,0.5);
+	border-bottom:1px solid #ccc;
+	
+}
+
+.wel_textarea{
+	height:140px;
+	width:100%;
+	border:0;
+}
+.nomal_ques{
+	height:150px;
+	background: rgba(204,204,204,0.5);
+
+}
+.repository_sort{
+	height:150px;
+	background: rgba(204,204,204,0.5);
+}
+
+.manyidu_content{
+	margin-left:14px;
+}
+
+.circle{
+    border-radius: 50%;
+    border: 0;
+    vertical-align: middle;
+    width:20px;
+    height:20px;
+}
+table td{
+    text-align: center;
+}
+.layui-table th {
+     text-align: center; 
+}
+
+.layui-input-block span{
+    margin-left:10px;
+}

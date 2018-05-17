@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>客服聊天</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="./css/x-admin.css" media="all">
+    <link rel="stylesheet" href="css/check_session.css">
+    <!--the css for jquery.mCustomScrollbar-->
+    <link rel="stylesheet" href="lib/jQuery-emoji-master20160321/lib/css/jquery.mCustomScrollbar.min.css" />
+    <!--the css for this plugin-->
+    <link rel="stylesheet" href="lib/jQuery-emoji-master20160321/src/css/jquery.emoji.css" />
+    <!-- <script src="http://www.weizoom.com/static/resources/js/jquery-1.7.1.min.js"></script>-->
+    <script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.js"></script>
+    <!--the js for jquery-->
+    <!--(Optional) the js for jquery.mCustomScrollbar's addon-->
+    <script src="lib/jQuery-emoji-master20160321/lib/script/jquery.mousewheel-3.0.6.min.js"></script>
+    <!--the js for jquery.mCustomScrollbar-->
+    <script src="lib/jQuery-emoji-master20160321/lib/script/jquery.mCustomScrollbar.min.js"></script>
+    <!--the js for this plugin-->
+    <script src="lib/jQuery-emoji-master20160321/src/js/jquery.emoji.js"></script>
+</head>
+
+<body>
+    <div class="main">
+        <div class="worker_list">
+            <div class="list_header">客服</div>
+            <table class="layui-table worker_table">
+                    <tbody>
+                        <tr>
+                            <td>
+                              <img class="worker_list_item_img" src="images/logo.png">
+                              <div class="worker_list_item">
+                                暂时没有客服在线
+                              </div>
+                            </td>
+                        </tr>
+                    </tbody>
+            </table>
+        </div>
+        <div class="worker_session">
+            <iframe frameborder="0"  src=""  class="x-iframe"></iframe>
+        </div>
+    </div>
+    <script src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script>
+        window.onload = function() {
+            $.ajax({
+                type: "POST",
+                url: "http://127.0.0.1:8088/basic/web/index.php?r=service/service",
+                dataType: "json",
+                success: function (message) {
+                    
+                    //console.log(message);
+                    //var data = message.data;
+                    console.log(message.info);
+                    var info = message.info.action;
+                    $(".content").empty();
+                    for(var i = 0; i < info.length; i++){
+                        // $(".content").append(
+                        //     '<div class = "service-contain">'+
+                        //     '<a class = "service" href = "http://10.21.30.215:55151/web/supervise_chat.html?servername=' + info[i]['servername'] + '">' + info[i]['servername'] + '</a>'+
+                        //     '</div>'
+                        //     );
+
+
+                        $(".worker_table tbody").append(
+                            '<tr>'+
+                                '<td>'+
+                                    '<img class="worker_list_item_img" src="images/logo.png">'+
+                                    '<div class="worker_list_item" data-url = "http://10.21.30.215/web/supervise_chat.html?servername='+ info[i]['servername'] + '">'+
+                                        info[i]['servername']+
+                                    '</div>'+
+                                '</td>'+
+                            '</tr>'
+                        );
+                    }
+
+                },
+                error: function (message) {
+                    alert("fail");
+                    // $("#request-process-patent").html("提交数据失败！");
+                }
+            });
+        };
+    $(document).on('click', '.worker_list tr', function() {
+        $('.worker_session').show();
+        var url = $(this).find(".worker_list_item").attr("data-url");
+        console.log(url);
+        $(".x-iframe").attr("src",url);
+        //console.log($(".x-iframe").attr("src"));
+    });
+    </script>
+</body>
+
+</html>

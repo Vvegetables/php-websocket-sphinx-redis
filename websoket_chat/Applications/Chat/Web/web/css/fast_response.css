@@ -1,0 +1,25 @@
+.layui-input, .layui-textarea {
+     display: inline; 
+    width: 95%;
+    padding-left:0;
+}
+
+table td {
+    text-align:left;
+}
+.layui-table th {
+    text-align: left;
+}
+
+input[type="text"]:disabled {
+    background-color: transparent;
+}
+
+.modified_input{
+    background: transparent;
+    border:0;
+}
+
+.layui-table tr td:first-of-type input{
+	margin-left:5px;
+}

@@ -1,0 +1,18 @@
+[Wed May 29 10:17:10.532 2013] [ 4904] accepting connections
+[Wed May 29 10:20:23.312 2013] [ 6016] accepting connections
+[Wed May 29 10:24:53.729 2013] [ 6032] accepting connections
+[Wed May 29 10:30:15.364 2013] [ 4816] accepting connections
+[Wed May 29 10:30:30.066 2013] [ 3952] accepting connections
+[Wed May 29 10:31:53.345 2013] [ 4904] FATAL: failed to open 'var/log/zp.log/binlog.lock': 2 'No such file or directory'
+[Wed May 29 10:33:46.686 2013] [ 4824] FATAL: failed to open 'var/log/zp.log/binlog.lock': 2 'No such file or directory'
+[Wed May 29 10:34:16.605 2013] [ 1052] accepting connections
+[Wed May 29 10:39:16.080 2013] [ 5708] accepting connections
+[Wed May 29 10:39:58.707 2013] [ 4320] accepting connections
+[Wed May 29 11:09:16.261 2013] [ 7596] accepting connections
+[Wed May 29 11:11:31.642 2013] [ 7980] accepting connections
+[Wed May 29 11:14:16.000 2013] [ 6092] accepting connections
+[Wed May 29 11:14:27.972 2013] [ 6468] accepting connections
+[Tue Jun  4 08:51:22.568 2013] [ 3616] accepting connections
+[Thu Jun  6 17:57:38.285 2013] [ 7660] accepting connections
+[Tue Jul 30 13:58:57.554 2013] [ 8780] accepting connections
+[Tue Jul 30 14:02:18.144 2013] [ 8624] accepting connections
